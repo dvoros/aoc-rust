@@ -1,30 +1,56 @@
+use core::panic;
 use std::fs::File;
 use std::io::{self, BufRead};
 use std::path::Path;
 
 fn main() -> Result<(), std::io::Error> {
-    let mut aim = 0;
-    let mut pos = 0;
-    let mut depth = 0;
+    let mut lines = read_lines("./input")?;
+    let mut counts: Vec<i32> = Vec::new();
 
-    let lines = read_lines("./input")?;
-    for line in lines {
-        if let Ok(l) = line {
-            let parts: Vec<&str> = l.split(" ").collect();
-            let dir = parts[0];
-            let num: i32 = parts[1].trim().parse().expect("should be a number");
-            match dir {
-                "down" => aim += num,
-                "up" => aim -= num,
-                "forward" => {
-                    pos += num;
-                    depth += aim * num;
+    let first_line = lines.next();
+    match first_line {
+        Some(line) => {
+            let line = line?;
+            for ch in line.chars() {
+                if ch == '1' {
+                    counts.push(1)
+                } else {
+                    counts.push(0)
                 }
-                d => panic!("unexpected instruction {d}"),
+            }
+        }
+        None => panic!("no lines"),
+    }
+
+    let mut number_of_lines = 1;
+    for line in lines {
+        number_of_lines += 1;
+        let line = line?;
+        for (i, ch) in line.chars().enumerate() {
+            if ch == '1' {
+                counts[i] += 1;
             }
         }
     }
-    println!("{}", pos * depth);
+
+    counts.reverse();
+
+    let mut gamma = 0;
+    let mut epsilon = 0;
+    let mut i = 1;
+    for cnt in counts {
+        if cnt == number_of_lines / 2 {
+            panic!("half and half");
+        }
+        if cnt > number_of_lines / 2 {
+            gamma += i;
+        } else {
+            epsilon += i;
+        }
+        i *= 2;
+    }
+
+    println!("{gamma} * {epsilon} = {}", gamma * epsilon);
 
     Ok(())
 }
