@@ -66,12 +66,10 @@ fn main() -> Result<(), std::io::Error> {
         let to = Point::from_i32s(nums[2], nums[3]);
         // println!("{from} -> {to}");
 
-        if !from.is_diagonal(&to) {
-            let between = from.points_between(&to);
-            for p in between {
-                board.insert(p, board.get(&p).unwrap_or(&0) + 1);
-                // println!(" - {}", p)
-            }
+        let between = from.points_between(&to);
+        for p in between {
+            board.insert(p, board.get(&p).unwrap_or(&0) + 1);
+            // println!(" - {}", p)
         }
     }
 
