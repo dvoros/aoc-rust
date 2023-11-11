@@ -115,6 +115,9 @@ fn main() -> Result<(), std::io::Error> {
 
     for x in first_line {
         for b in boards.iter_mut() {
+            if b.is_bingo() {
+                continue;
+            }
             b.cross_out(x);
             if b.is_bingo() {
                 println!(
@@ -123,7 +126,6 @@ fn main() -> Result<(), std::io::Error> {
                     b.unmarked_sum(),
                     b.unmarked_sum() * x as u32,
                 );
-                return Ok(());
             }
         }
     }
