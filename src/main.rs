@@ -1,43 +1,36 @@
-use atoi::atoi;
-use nom::{combinator::map_opt, IResult};
+use nom::{
+    bytes::complete::tag,
+    character::complete::{alpha1, char, space1},
+    multi::separated_list1,
+    sequence::separated_pair,
+    IResult,
+};
 
 pub fn main() {
-    let mut nums = vec![];
-    let (mut min, mut max) = (u32::MAX, 0);
-    include_bytes!("../input")
-        .split(|b| *b == b',')
-        .map(|entry| num(entry).unwrap().1)
-        .for_each(|x| {
-            nums.push(x);
-            if x > max {
-                max = x;
-            }
-            if x < min {
-                min = x
-            }
-        });
-    println!("there are {} values between {min} and {max}", nums.len());
-    let mut min_cost = u32::MAX;
-    for n in min..=max {
-        println!("checking {n}");
-        let c = cost(&nums, n);
-        if c < min_cost {
-            min_cost = c;
-        }
-    }
-    println!("min cost is {min_cost}");
+    let sum: usize = parse_lines(include_str!("../test_input"))
+        .unwrap()
+        .1
+        .iter()
+        .map(|line| solve_line(&line.0, &line.1))
+        .sum();
+    println!("number of matching: {sum}");
 }
 
-fn cost(positions: &[u32], target: u32) -> u32 {
-    let mut c = 0;
-    for p in positions {
-        if *p != target {
-            c += (1..=p.abs_diff(target)).sum::<u32>();
-        }
-    }
-    c
+fn solve_line(left: &Vec<&str>, right: &Vec<&str>) -> usize {
+    right
+        .iter()
+        .filter(|word| [2, 3, 4, 7].contains(&word.len()))
+        .count()
 }
 
-fn num(input: &[u8]) -> IResult<&[u8], u32> {
-    map_opt(nom::character::complete::digit1, atoi)(input)
+fn parse_side(input: &str) -> IResult<&str, Vec<&str>> {
+    separated_list1(space1, alpha1)(input)
+}
+
+fn parse_line(input: &str) -> IResult<&str, (Vec<&str>, Vec<&str>)> {
+    separated_pair(parse_side, tag(" | "), parse_side)(input)
+}
+
+fn parse_lines(input: &str) -> IResult<&str, Vec<(Vec<&str>, Vec<&str>)>> {
+    separated_list1(char('\n'), parse_line)(input)
 }
