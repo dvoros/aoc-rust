@@ -1,4 +1,2 @@
-/target
-/.vscode/
-input
-test_input
+target/
+.vscode/
