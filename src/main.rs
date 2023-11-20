@@ -5,24 +5,45 @@ use nom::{
     IResult,
 };
 
-pub fn main() {
-    let mx = parse_lines(include_str!("../input")).unwrap().1;
+struct Point {
+    found: bool,
+    value: u8,
+}
 
-    let mut risk_level: u32 = 0;
-    for (i, row) in mx.iter().enumerate() {
-        for (j, x) in row.iter().enumerate() {
-            let ns = neighbors(&mx, i, j);
-            if ns.iter().all(|n| n > x) {
-                risk_level += *x as u32 + 1;
-                // println!("{x} (at [{i}, {j}]) is a low point");
+impl Point {
+    fn new(value: u8) -> Point {
+        Point {
+            found: false,
+            value,
+        }
+    }
+}
+
+pub fn main() {
+    let mut mx = parse_lines(include_str!("../input")).unwrap().1;
+
+    let mut sizes = Vec::new();
+    for i in 0..mx.len() {
+        for j in 0..mx[0].len() {
+            if !mx[i][j].found && mx[i][j].value != 9 {
+                let basin_size = basin(&mut mx, i, j);
+                // println!("basin of {basin_size}");
+                sizes.push(basin_size);
             }
         }
     }
-    println!("risk level is {risk_level}");
+    sizes.sort_unstable();
+    sizes.reverse();
+    let res = sizes[0..3].iter().fold(1, |c, x| c * x);
+    println!("result is {res}");
 }
 
-fn neighbors(mx: &Vec<Vec<u8>>, i: usize, j: usize) -> Vec<u8> {
-    let mut res = Vec::new();
+fn basin(mx: &mut Vec<Vec<Point>>, i: usize, j: usize) -> u32 {
+    mx[i][j].found = true;
+    if mx[i][j].value == 9 {
+        return 0;
+    }
+    let mut from_neighbors = 0;
     let deltas: [(isize, isize); 4] = [(-1, 0), (0, -1), (1, 0), (0, 1)];
     for delta in deltas {
         let r = i as isize + delta.0;
@@ -30,21 +51,24 @@ fn neighbors(mx: &Vec<Vec<u8>>, i: usize, j: usize) -> Vec<u8> {
             let row = &mx[r as usize];
             let c = j as isize + delta.1;
             if c >= 0 && c < row.len() as isize {
-                res.push(row[c as usize]);
+                if !mx[r as usize][c as usize].found {
+                    from_neighbors += basin(mx, r as usize, c as usize);
+                }
             }
         }
     }
-    res
+    1 + from_neighbors
 }
 
-fn from_str(input: &str) -> Result<u8, std::num::ParseIntError> {
-    input.parse::<u8>()
+fn from_str(input: &str) -> Result<Point, std::num::ParseIntError> {
+    let value = input.parse::<u8>()?;
+    Ok(Point::new(value))
 }
 
-fn parse_line(input: &str) -> IResult<&str, Vec<u8>> {
+fn parse_line(input: &str) -> IResult<&str, Vec<Point>> {
     many1(map_res(take(1usize), from_str))(input)
 }
 
-fn parse_lines(input: &str) -> IResult<&str, Vec<Vec<u8>>> {
+fn parse_lines(input: &str) -> IResult<&str, Vec<Vec<Point>>> {
     separated_list1(tag("\n"), parse_line)(input)
 }
