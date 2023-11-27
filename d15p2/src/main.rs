@@ -22,6 +22,7 @@ impl Cell {
 }
 
 const WIDTH: usize = 100;
+const NEIGHBORS: [(i32, i32); 4] = [(-1, 0), (1, 0), (0, -1), (0, 1)];
 
 fn main() {
     let small_mx: Vec<Vec<_>> = include_str!("../input").lines().map(|line| {
@@ -45,38 +46,18 @@ fn main() {
         }
     }
 
-    for x in 0..mx.len() {
-        for y in 0..mx[0].len() {
-            print!("{}", mx[x][y])
-        }
-        println!()
-    }
-
-    let (w, h) = (mx.len(), mx[0].len());
-    let rounds: Vec<Vec<_>> = (1..w+h-1).map(|i| {
-        (0..w).flat_map(|x| {
-            (0..h).filter(|y| x + y == i).map(|y| (x, y)).collect::<Vec<_>>()
-        }).collect()
-    }).collect();
-
-    for round in rounds {
-        for (x, y) in round {
-            let own_risk =  mx[x][y].own_risk;
-            let left = if x > 0 {
-                own_risk as u32 + mx[x-1][y].best_path
-            } else {
-                u32::MAX
-            };
-            let top = if y > 0 {
-                own_risk as u32 + mx[x][y-1].best_path
-            } else {
-                u32::MAX
-            };
-            mx[x][y].best_path = left.min(top)
-        }
-    }
-    println!("{}", mx[mx.len()-1][mx[0].len()-1].best_path)
-
-    // 3165 too high
-    // 2926 too high
+    let res: u32 = pathfinding::directed::dijkstra::dijkstra(
+        &(0, 0), 
+            |&(x, y)| {
+                NEIGHBORS.iter().map(|(xx, yy)| {
+                    mx.get((x + xx) as usize)
+                        .and_then(|row| row.get((y + yy) as usize))
+                        .map(|cell| ((x+xx, y+yy), cell.own_risk))
+                })
+                .flatten().collect::<Vec<_>>()
+            },
+    |&p| p == (mx.len() as i32 -1, mx.len() as i32 -1)
+    ).unwrap().1;
+    
+    println!("{res}")
 }
