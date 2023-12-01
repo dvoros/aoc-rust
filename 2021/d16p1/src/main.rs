@@ -1,12 +1,12 @@
 
 #![feature(array_chunks)]
 
-struct bits<'a> {
+struct Bits<'a> {
     value: &'a[u8],
     pos: usize,
 }
 
-impl<'a> bits<'a> {
+impl<'a> Bits<'a> {
     fn from_bytes(bytes: &'a[u8]) -> Self {
         Self { value: bytes, pos: 0 }
     }
@@ -39,25 +39,38 @@ impl<'a> bits<'a> {
 }
 
 #[derive(Debug)]
-struct Packet<'a> {
+struct Packet {
     version: usize,
-    packet_type: PacketType<'a>,
+    packet_type: PacketType,
     length: usize,
 }
 
 #[derive(Debug)]
-struct OperatorValue<'a> {
+struct OperatorValue {
     type_id: usize,
-    sub_packets: &'a [Packet<'a>]
+    sub_packets: Vec<Packet>,
 }
 
 #[derive(Debug)]
-enum PacketType<'a> {
+enum PacketType {
     Literal(usize),
-    Operator(OperatorValue<'a>)
+    Operator(OperatorValue)
 }
 
-fn parse_packet<'a>(b: &'a mut bits) -> Packet<'a> {
+fn sum_version(p: &Packet) -> usize {
+    p.version + match &p.packet_type {
+        PacketType::Literal(_) => 0,
+        PacketType::Operator(op_val) => {
+            let mut sum = 0;
+            for sp in op_val.sub_packets.iter() {
+                sum += sum_version(sp);
+            }
+            sum
+        }
+    }
+}
+
+fn parse_packet<'a>(b: &'a mut Bits) -> Packet {
     let start_pos = b.pos;
     let version = b.take(3);
     let type_id = b.take(3);
@@ -78,7 +91,12 @@ fn parse_packet<'a>(b: &'a mut bits) -> Packet<'a> {
                 sub_packets.push(sub_packet);
             }
         } else {
-            panic!("unimplemented")
+            let mut packets_to_parse = b.take(11);
+            while packets_to_parse > 0 {
+                packets_to_parse -= 1;
+                let sub_packet = parse_packet(b);
+                sub_packets.push(sub_packet);
+            }
         }
         let length = b.pos - start_pos;
         return Packet {
@@ -86,7 +104,7 @@ fn parse_packet<'a>(b: &'a mut bits) -> Packet<'a> {
             packet_type: PacketType::Operator(
                 OperatorValue {
                     type_id: type_id,
-                    sub_packets: &sub_packets,
+                    sub_packets: sub_packets,
                 }),
             length,
         }
@@ -94,7 +112,7 @@ fn parse_packet<'a>(b: &'a mut bits) -> Packet<'a> {
 }
 
 fn main() {
-    let bytes: Vec<_> = include_str!("../test_input1")
+    let bytes: Vec<_> = include_str!("../input")
         .trim()
         .as_bytes()
         .array_chunks()
@@ -102,9 +120,10 @@ fn main() {
             (((a as char).to_digit(16).unwrap() as u8) << 4)
             | (b as char).to_digit(16).unwrap() as u8
         }).collect();
-    println!("{:?}", bytes);
+    // println!("{:?}", bytes);
 
-    let mut b = bits::from_bytes(&bytes);
+    let mut b = Bits::from_bytes(&bytes);
     let p = parse_packet(&mut b);
-    println!("{:?}", p);
+    // println!("{:?}", p);
+    println!("{}", sum_version(&p));
 }
