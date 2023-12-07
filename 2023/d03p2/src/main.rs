@@ -18,7 +18,6 @@ struct NumSym {
 pub fn main() {
     let mx = include_str!("../input").trim().lines().map(
         |line| {
-            // println!("{row}: {line}");
             line.bytes().map(
                 |ch| {
                     if ch == '.' as u8 {
@@ -54,14 +53,12 @@ pub fn main() {
                         col_to: c-1,
                     };
                     numbers.push(num_sym);
-                    // println!("{number} ended at ({r}, {c})");
                     number = 0;
                 }
                 match cell {
                     Cell::Empty => {},
                     Cell::Symbol(s) => {
                         symbols.insert((r,c), *s);
-                        // println!("symbol ({s}) at ({r},{c})");
                     }
                     _ => panic!("shouldn't happen"),
                 }
@@ -76,7 +73,6 @@ pub fn main() {
                 col_to: c,
             };
             numbers.push(num_sym);
-            // println!("{number} ended at ({r}, {c})");
             number = 0;
         }
     }

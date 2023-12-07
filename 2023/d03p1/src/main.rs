@@ -19,7 +19,6 @@ struct NumSym {
 pub fn main() {
     let mx = include_str!("../input").trim().lines().map(
         |line| {
-            // println!("{row}: {line}");
             line.bytes().map(
                 |ch| {
                     if ch == '.' as u8 {
@@ -56,14 +55,12 @@ pub fn main() {
                         syms: Vec::new(),
                     };
                     numbers.push(num_sym);
-                    // println!("{number} ended at ({r}, {c})");
                     number = 0;
                 }
                 match cell {
                     Cell::Empty => {},
                     Cell::Symbol(s) => {
                         symbols.insert((r,c), *s);
-                        // println!("symbol ({s}) at ({r},{c})");
                     }
                     _ => panic!("shouldn't happen"),
                 }
@@ -79,7 +76,6 @@ pub fn main() {
                 syms: Vec::new(),
             };
             numbers.push(num_sym);
-            // println!("{number} ended at ({r}, {c})");
             number = 0;
         }
     }
@@ -87,7 +83,6 @@ pub fn main() {
     let deltas: Vec<_> = [-1, 0, 1].iter().flat_map(|x| {
         [-1, 0, 1].iter().filter(|&y| *x != 0 || *y != 0).map(|&y| (*x, y))
     }).collect();
-    println!("{:?}", deltas);
 
     for (k, v) in symbols {
         for d in deltas.iter() {
@@ -102,7 +97,6 @@ pub fn main() {
             }
         }
     }
-    println!("{:?}", numbers);
 
     let res: usize = numbers.iter().filter(|ns| ns.syms.len() > 0).map(|ns| ns.num).sum();
     println!("{res}");
