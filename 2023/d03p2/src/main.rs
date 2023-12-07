@@ -15,7 +15,7 @@ struct NumSym {
     col_to: usize,
 }
 
-fn main() {
+pub fn main() {
     let mx = include_str!("../input").trim().lines().map(
         |line| {
             // println!("{row}: {line}");

@@ -1,4 +1,4 @@
-fn main() {
+pub fn main() {
     let res: usize = include_str!("../input").trim().lines().map(
         |line| {
             let (l, r) = line.trim().split_once(":").unwrap();

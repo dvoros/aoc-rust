@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-fn main() {
+pub fn main() {
     let res: usize = include_str!("../input").trim().lines().map(
         |line| {
             let r = line.trim().split_once(":").unwrap().1;

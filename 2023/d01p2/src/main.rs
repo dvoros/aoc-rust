@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-fn main() {
+pub fn main() {
     let sum: u32 = include_str!("../input").trim().lines().map(
         |line| {
             let nums = parse_nums_from_line(line);

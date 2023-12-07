@@ -1,4 +1,4 @@
-fn main() {
+pub fn main() {
     let mut parts = include_str!("../input").split("\n\n");
     let seeds: Vec<(usize, usize)> = parts
         .next()

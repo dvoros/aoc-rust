@@ -16,7 +16,7 @@ struct NumSym {
     syms: Vec<u8>,
 }
 
-fn main() {
+pub fn main() {
     let mx = include_str!("../input").trim().lines().map(
         |line| {
             // println!("{row}: {line}");

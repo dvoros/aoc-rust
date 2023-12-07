@@ -1,4 +1,4 @@
-fn main() {
+pub fn main() {
     let mut lines = include_str!("../test_input").trim().lines().map(|line| {
         line.replace(" ", "")
             .split_once(":")

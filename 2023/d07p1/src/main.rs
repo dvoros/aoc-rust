@@ -73,7 +73,7 @@ fn type_of_hand(cards: &str) -> usize {
     }
 }
 
-fn main() {
+pub fn main() {
     let mut hands: Vec<_> = include_str!("../input").trim().lines().map(|line| {
         let (hand, bid) = line.split_once(" ").unwrap();
         let hand = hand

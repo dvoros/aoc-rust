@@ -7,3 +7,7 @@ edition = "2021"
 
 [dependencies]
 regex = "1.10.2"
+
+
+[lib]
+path = "src/main.rs"

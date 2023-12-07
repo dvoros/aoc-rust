@@ -1,0 +1,60 @@
+[package]
+name = "runner"
+version = "0.1.0"
+authors = ["Tim Visee <3a4fb3964f@sinenomine.email>"]
+edition = "2021"
+
+[dependencies]
+rayon = "1.8"
+took = "0.1"
+
+# ds
+d01p1 = { path = "../d01p1" }
+d01p2 = { path = "../d01p2" }
+d02p1 = { path = "../d02p1" }
+d02p2 = { path = "../d02p2" }
+d03p1 = { path = "../d03p1" }
+d03p2 = { path = "../d03p2" }
+d04p1 = { path = "../d04p1" }
+d04p2 = { path = "../d04p2" }
+d05p1 = { path = "../d05p1" }
+d05p2 = { path = "../d05p2" }
+d06p1 = { path = "../d06p1" }
+d06p2 = { path = "../d06p2" }
+d07p1 = { path = "../d07p1" }
+d07p2 = { path = "../d07p2" }
+# d08p1 = { path = "../d08p1" }
+# d08p2 = { path = "../d08p2" }
+# d09p1 = { path = "../d09p1" }
+# d09p2 = { path = "../d09p2" }
+# d10p1 = { path = "../d10p1" }
+# d10p2 = { path = "../d10p2" }
+# d11p1 = { path = "../d11p1" }
+# d11p2 = { path = "../d11p2" }
+# d12p1 = { path = "../d12p1" }
+# d12p2 = { path = "../d12p2" }
+# d13p1 = { path = "../d13p1" }
+# d13p2 = { path = "../d13p2" }
+# d14p1 = { path = "../d14p1" }
+# d14p2 = { path = "../d14p2" }
+# d15p1 = { path = "../d15p1" }
+# d15p2 = { path = "../d15p2" }
+# d16p1 = { path = "../d16p1" }
+# d16p2 = { path = "../d16p2" }
+# d17p1 = { path = "../d17p1" }
+# d17p2 = { path = "../d17p2" }
+# d18p1 = { path = "../d18p1" }
+# d18p2 = { path = "../d18p2" }
+# d19p1 = { path = "../d19p1" }
+# d19p2 = { path = "../d19p2" }
+# d20p1 = { path = "../d20p1" }
+# d20p2 = { path = "../d20p2" }
+# d21p1 = { path = "../d21p1" }
+# d21p2 = { path = "../d21p2" }
+# d22p1 = { path = "../d22p1" }
+# d22p2 = { path = "../d22p2" }
+# d23p1 = { path = "../d23p1" }
+# d23p2 = { path = "../d23p2" }
+# d24p1 = { path = "../d24p1" }
+# d24p2 = { path = "../d24p2" }
+# d25p1 = { path = "../d25p1" }

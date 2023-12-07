@@ -1,4 +1,4 @@
-fn main() {
+pub fn main() {
     let mut copies = Vec::new();
     let mut scores = Vec::new();
     include_str!("../input").trim().lines().for_each(
