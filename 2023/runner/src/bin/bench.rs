@@ -1,3 +1,5 @@
+use std::time::Duration;
+
 use took::{Timer, Took};
 
 const RUNS: usize = 100;
@@ -16,8 +18,8 @@ fn main() {
                         j.0();
                         took.took().into_std()
                     })
-                    .min()
-                    .unwrap(),
+                    .sum::<Duration>()
+                    / RUNS as u32,
             )
         })
         .collect();
